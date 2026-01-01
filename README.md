@@ -42,9 +42,14 @@ anomaly-detection/
 
 ### Prerequisites
 
-This project uses [uv](https://github.com/astral-sh/uv) for fast, reliable Python package management. uv is a modern alternative to pip that's significantly faster and more reliable.
+This project requires the following tools:
 
-#### Install uv
+- **[uv](https://github.com/astral-sh/uv)**: A fast, reliable Python package manager and modern alternative to pip, used for dependency management and virtual environment creation.
+- **[pre-commit](https://pre-commit.com/)**: A framework for managing git hooks to enforce code quality, formatting standards, and commit message conventions.
+
+### Installation
+
+#### 1. Install uv
 
 ```bash
 # MacOS / Linux
@@ -57,14 +62,14 @@ powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
 pip install uv
 ```
 
-### Project Installation
+#### 2. Clone and Setup Project
 
 ```bash
 # Clone repository
 git clone https://github.com/yourusername/anomaly-detection.git
 cd anomaly-detection
 
-# Sync dependencies
+# Sync dependencies (automatically creates virtual environment)
 uv sync
 
 # Install project in editable mode
@@ -73,6 +78,14 @@ uv pip install -e .
 # Activate virtual environment
 source .venv/bin/activate # MacOS / Linux
 .venv\Scripts\activate # Windows
+```
+
+#### 3. Install Pre-commit Hooks
+
+```bash
+# Install pre-commit hooks for code quality and commit message validation
+pre-commit install --install-hooks
+pre-commit install --hook-type commit-msg
 ```
 
 ### Running the Project
@@ -98,35 +111,6 @@ Core libraries:
 
 See `pyproject.toml` for complete list of dependencies.
 
-## Usage Example
-
-```python
-from pyspark.sql import SparkSession
-from scipy.io import arff
-import pandas as pd
-
-# Initialise Spark session
-spark = SparkSession.builder \
-    .appName("BankingFraudDetection") \
-    .getOrCreate()
-
-# Load banking data from ARFF format
-data, meta = arff.loadarff('../data/bank-additional-ful-nominal.arff')
-df = pd.DataFrame(data)
-df = df.applymap(lambda x: x.decode("utf-8") if isinstance(x, bytes) else x)
-
-# Convert to Spark DataFrame
-bank_df = spark.createDataFrame(df)
-bank_df.createOrReplaceTempView("BANK")
-
-# Explore the data
-bank_df.printSchema()
-spark.sql("SELECT * FROM BANK LIMIT 5").show()
-
-# Apply anomaly detection algorithms
-# ... your fraud detection analysis here
-```
-
 ## Dataset Information
 
 This project uses banking marketing campaign data in ARFF format. The dataset contains categorical features related to:
@@ -142,7 +126,7 @@ The banking dataset is stored in `data/bank-additional-ful-nominal.arff` and con
 
 ## Authors
 
-[Keith Sng](mailto:keith.sngth@gmail.com)  
+[Keith Sng](mailto:keith.sngth@gmail.com)<br>
 Samuel Koh
 
 ## References
